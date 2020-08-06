@@ -78,6 +78,37 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
         })
 
 
+        //  to get all registered hospitals
+        app.get("/allregisteredhospitals",(req,res)=>{
+
+            console.log("returning all registered hospitals...")
+
+            hospitalcollection.find({}).toArray((err,result)=>{
+                if(err){
+                    throw err
+                }
+                else{
+                    /// result is null only if there aren't any hospitals
+                    if(result==null){
+                        console.log("No hospitals registered")
+                        res.status(400).send()
+                    }
+                    else{
+
+                        const returnedvalue = {
+                            hospitals:result
+                        }
+
+                        console.log("retrieving all registered hospitals")
+                        console.log(returnedvalue)
+                        res.status(200).send(JSON.stringify(returnedvalue))
+                    }
+                }
+            })
+
+        })
+
+
 
 
 
