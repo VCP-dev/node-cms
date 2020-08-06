@@ -3,6 +3,7 @@ const app = express()
 const mongoClient = require('mongodb')
 
 
+
 const port = 3300
 const url = "mongodb://localhost:27017"
 
@@ -31,8 +32,62 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
 
 
         const myDB = db.db('myDB')
-        const collection = myDB.collection('myTable')
+        /*const collection = myDB.collection('table')*/
+        const hospitalcollection = myDB.collection('hospitaltable')   /// table for storing data on each hospital
 
+
+
+        // for adding a new hospital
+        app.post('/newhospital',(req,res)=>{
+
+            console.log("Recieved new hospital "+req.body)
+
+            const newHospital = {
+                name:req.body.name,
+                numberOfBeds:req.body.numberOfBeds,
+                location:req.body.location,
+                description:req.body.description                
+            }
+
+            console.log(newHospital)
+            
+            const query = {name:newHospital.name}
+
+            //  to check if hospitalname is unique
+            hospitalcollection.findOne(query,(err,result)=>{
+
+                // result is 'null' only if no other hospitals have the same name
+                if(result==null){
+                    hospitalcollection.insertOne(newHospital,(err,result)=>{
+
+                        console.log("Hospital has been added")
+                        
+                        // sending a status response of 200 to client
+                        res.status(200).send()
+                    })
+                }else{
+
+                    console.log("Hospital has already been registered")
+
+                    // sending a status response of 400 to client (i.e bad request)
+                    res.status(400).send()
+                }
+
+            })
+
+        })
+
+
+
+
+
+
+
+
+
+
+        /// example post requests......
+        /*
         app.post('/signup',(req,res)=>{
 
             console.log("Recieved new user "+req.body)
@@ -83,7 +138,7 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
                 // user exists with same email and password
                 if(result!=null){
 
-                    console.log("Logged in as "+result.body)
+                    console.log("Logged in as "+query)
 
                     const objToSend = {
                         name:result.name,
@@ -100,8 +155,10 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
                     res.status(404).send();
                 }
             })
-        })
+            
+        })*/
         }
+        
     }) 
         
    
