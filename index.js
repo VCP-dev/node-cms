@@ -36,7 +36,19 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
         const hospitalcollection = myDB.collection('hospitaltable')   /// table for storing data on each hospital
 
 
-
+/*       //  for deleting all records
+        hospitalcollection.remove({},(err,result)=>{
+            if (err) {
+                console.log(err);
+            }
+            else{
+            console.log(result);
+            console.log("Deleted all records !!!")
+            }
+            
+        })
+*/
+        
         // for adding a new hospital
         app.post('/newhospital',(req,res)=>{
 
@@ -107,6 +119,85 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
             })
 
         })
+
+
+
+        // to delete a hospital
+        app.get("/delete",(req,res)=>{
+
+            console.log("attempting delete request...")
+
+            const query = {
+                name:req.body.name                
+            }
+
+            console.log(query)            
+
+            //  seraching by the name and then deleting
+            hospitalcollection.remove(query,(err,result)=>{
+                if(err){
+                    throw err
+                }
+                else{
+                    if(result==null){
+                        console.log("no such hospital present")
+                        res.status(400).send()
+                    }
+                    else{
+                        console.log(result)   
+                        res.status(200).send()
+                    }
+                }
+            })
+
+        })
+
+
+
+
+        //to update a hospital
+        app.put("/updatehospital",(req,res)=>{
+            
+            console.log("attemping put request...")
+
+            const details = {
+                name:req.body.name,
+                numberofbeds:req.body.number
+            }
+
+            console.log(details)
+
+            const query = {
+                name:details.name
+            }
+
+            const updatedvalue = {
+                $set:{
+                numberOfBeds:details.numberofbeds
+                }
+            }            
+
+            //  seraching by the name and then updating the number of hospital beds in use
+            hospitalcollection.findOneAndUpdate(query,updatedvalue,{new:true},(err,result)=>{
+                if(err){
+                    throw err
+                }
+                else{
+                   /// result is null only if the hospital does not exist
+                   if(result.lastErrorObject.updatedExisting==false){
+                    console.log("No such hospital is registered")
+                    res.status(400).send()
+                   }
+                   else{
+                    console.log(result)   
+                    res.status(200).send()
+                   }
+                }
+            })
+        })
+
+
+        
 
 
 
@@ -188,6 +279,9 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
             })
             
         })*/
+
+
+
         }
         
     }) 
