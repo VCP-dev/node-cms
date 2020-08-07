@@ -123,7 +123,7 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
 
 
         // to delete a hospital
-        app.get("/delete",(req,res)=>{
+        app.post("/delete",(req,res)=>{
 
             console.log("attempting delete request...")
 
@@ -134,17 +134,17 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
             console.log(query)            
 
             //  seraching by the name and then deleting
-            hospitalcollection.remove(query,(err,result)=>{
+            hospitalcollection.deleteOne(query,(err,coll)=>{
                 if(err){
                     throw err
                 }
                 else{
-                    if(result==null){
+                    if(coll.result.n==0){
                         console.log("no such hospital present")
                         res.status(400).send()
                     }
                     else{
-                        console.log(result)   
+                        console.log(coll)   
                         res.status(200).send()
                     }
                 }
