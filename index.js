@@ -31,8 +31,7 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
         console.log("connected !!!")    
 
 
-        const myDB = db.db('myDB')
-        /*const collection = myDB.collection('table')*/
+        const myDB = db.db('myDB')       
         const hospitalcollection = myDB.collection('hospitaltable')   /// table for storing data on each hospital
 
 
@@ -48,6 +47,8 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
             
         })
 */
+
+
         
         // for adding a new hospital
         app.post('/newhospital',(req,res)=>{
@@ -155,7 +156,7 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
 
 
 
-        //to update a hospital
+        //to update the number of beds in a hospital
         app.put("/updatehospital",(req,res)=>{
             
             console.log("attemping put request...")
@@ -194,93 +195,7 @@ mongoClient.connect(url/*,options*/,(err,db)=>{     //  db refers to mongo clien
                    }
                 }
             })
-        })
-
-
-        
-
-
-
-
-
-
-
-
-
-
-        /// example post requests......
-        /*
-        app.post('/signup',(req,res)=>{
-
-            console.log("Recieved new user "+req.body)
-            
-            const newUser = {
-                name:req.body.name,
-                email:req.body.email,
-                password:req.body.password
-            }
-
-            const query = {email:newUser.email}
-
-            //  to check if email is unique
-            collection.findOne(query,(err,result)=>{
-
-                // result is 'null' only if no other objects have the same email
-                if(result==null){
-                    collection.insertOne(newUser,(err,result)=>{
-
-                        console.log("User has been added")
-                        
-                        // sending a status response of 200 to client
-                        res.status(200).send()
-                    })
-                }else{
-
-                    console.log("User already exists")
-
-                    // sending a status response of 400 to client (i.e bad request)
-                    res.status(400).send()
-                }
-
-            })
-
-        })
-
-
-        app.post('/login',(req,res)=>{
-
-            const query = {
-                email:req.body.email,
-                password:req.body.password
-            }
-
-            // checking if any object which has same email or password
-            collection.findOne(query,(err,result)=>{
-
-                // user exists with same email and password
-                if(result!=null){
-
-                    console.log("Logged in as "+query)
-
-                    const objToSend = {
-                        name:result.name,
-                        email:result.email
-                    }
-
-                    res.status(200).send(JSON.stringify(objToSend))
-
-                }
-                else{   // no user exists with the same email and password
-
-                    console.log("No such user exists....")
-
-                    res.status(404).send();
-                }
-            })
-            
-        })*/
-
-
+        }) 
 
         }
         
